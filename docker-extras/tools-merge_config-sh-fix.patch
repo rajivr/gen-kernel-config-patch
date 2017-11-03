@@ -1,0 +1,22 @@
+tools/merge_config.sh: Fix readlink for busybox
+
+From: Rajiv M Ranganath <rajiv.ranganath@atihita.com>
+
+busybox readlink does not support -m option
+---
+ tools/merge_config.sh |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/merge_config.sh b/tools/merge_config.sh
+index 67d1314..be1a988 100755
+--- a/tools/merge_config.sh
++++ b/tools/merge_config.sh
+@@ -84,7 +84,7 @@ fi
+ 
+ if [ -z "$KCONFIG_CONFIG" ]; then
+ 	if [ "$OUTPUT" != . ]; then
+-		KCONFIG_CONFIG=$(readlink -m -- "$OUTPUT/.config")
++		KCONFIG_CONFIG=$(readlink -- "$OUTPUT/.config")
+ 	else
+ 		KCONFIG_CONFIG=.config
+ 	fi
