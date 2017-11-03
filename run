@@ -1,0 +1,172 @@
+#!/bin/sh
+
+set -e
+
+cleanup() {
+    rm -rf "$tmp"
+}
+
+# _KBRANCH_GIT is the yocto project kernel git
+#
+# _KBRANCH is the yocto kernel branch that we use. See
+# http://www.yoctoproject.org/docs/2.5/ref-manual/ref-manual.html#var-KBRANCH
+#
+# _KBRANCH_COMMIT
+# This is the commit to use from KBRANCH
+#
+# _KBRANCH_GIT_DEPTH
+# depth of the git tree to checkout.
+#
+# This roughly corresponds to poky's do_kernel_checkout task
+checkout_yocto_kernel() {
+    local _KBRANCH_GIT="git://git.yoctoproject.org/linux-yocto-$mainkver"
+    local _KBRANCH="standard/base"
+    local _KBRANCH_COMMIT="d8520539587665c19a0afc97858069184574da66"
+    local _KBRANCH_GIT_DEPTH=25
+    local saved_pwd=$(pwd -P)
+
+    cd "$tmp"
+    git clone -b "$_KBRANCH" --depth "$_KBRANCH_GIT_DEPTH" \
+        --single-branch "$_KBRANCH_GIT" linux-yocto
+
+    cd linux-yocto
+    git checkout "$_KBRANCH_COMMIT" -b kbranch-commit
+    cd "$saved_pwd"
+}
+
+# YKC stands for yocto kernel cache
+checkout_yocto_kernel_cache() {
+    local _YKC_GIT="git://git.yoctoproject.org/yocto-kernel-cache"
+    local _YKC_BRANCH="yocto-$mainkver"
+    local _YKC_COMMIT="f4e37e151102d89c4d0e110c88eb3b3c36bdeaa4"
+    local saved_pwd=$(pwd -P)
+
+    cd "$tmp"
+    git clone -b "$_YKC_BRANCH" --single-branch "$_YKC_GIT" yocto-kernel-cache
+
+    cd yocto-kernel-cache
+    git checkout "$_YKC_COMMIT" -b ykc-commit
+    cd "$saved_pwd"
+}
+
+# This roughly corresponds to poky's do_kernel_meta task
+#
+# _KMACHINE
+# http://www.yoctoproject.org/docs/2.5/ref-manual/ref-manual.html#var-KMACHINE
+#
+# _KTYPE
+# http://www.yoctoproject.org/docs/2.5/ref-manual/ref-manual.html#var-KTYPE
+#
+# _KMACHINE and _KTYPE is used to extract out bsp description '.scc' file from
+# yocto-kernel-cache
+# http://www.yoctoproject.org/docs/2.5/kernel-dev/kernel-dev.html#bsp-descriptions
+kernel_meta() {
+    local _KMACHINE="common-pc-64"
+    local _KTYPE="standard"
+    local kmeta_ykc_features_list="
+        features/debug/debug-kernel.scc
+        features/debug/printk.scc
+        features/netfilter/netfilter.scc
+        "
+    local kmeta_local_features_list="
+        cfg/localversion.scc
+        features/fedora/fedora.scc
+        features/squashfs/squashfs.scc
+        features/vboxguest/vboxguest.scc
+        "
+
+    local kmeta_local_dir="$(dirname $0)"
+    local kmeta_ykc_dir="$tmp/yocto-kernel-cache"
+
+    local bsp_definition=$(spp -I$kmeta_local_dir -I$kmeta_ykc_dir \
+                               --find -DKMACHINE=$_KMACHINE -DKTYPE=$_KTYPE)
+    local meta_dir=$(kgit --meta)
+
+    local kmeta_ykc_features=""
+    for i in $kmeta_ykc_features_list; do
+        kmeta_ykc_features="$kmeta_ykc_features $i"
+    done
+
+    local kmeta_local_features=""
+    for i in $kmeta_local_features_list; do
+        kmeta_local_features="$kmeta_local_features $i"
+    done
+
+    mkdir -p "$tmp/linux-yocto/$meta_dir"
+    echo "$bsp_definition" > "$tmp/linux-yocto/$meta_dir/bsp_definition"
+    scc --force -o "$tmp/linux-yocto/$meta_dir:cfg,merge,meta" \
+        -I$kmeta_local_dir -I$kmeta_ykc_dir \
+        $bsp_definition \
+        $kmeta_local_features $kmeta_ykc_features
+    scc --force -o "$tmp/linux-yocto/$meta_dir:patch" --cmds patch \
+        -I$kmeta_local_dir -I$kmeta_ykc_dir \
+        $kmeta_local_features $kmeta_ykc_features
+}
+
+# This roughly corresponds to poky's do_patch task
+apply_patch() {
+    local saved_pwd=$(pwd -P)
+
+    cd "$tmp/linux-yocto"
+    git config --local user.email lambda2.patch@lambda2
+    git config --local user.name Lambda2
+
+    local meta_dir=$(kgit --meta)
+    (cd $meta_dir; ln -sf patch.queue series)
+    if [ -f "$meta_dir/series" ]; then
+        kgit-s2q --gen -v --patches $meta_dir
+    fi
+
+    cd "$saved_pwd"
+}
+
+# This roughly corresponds to poky's do_kernel_configme task
+kernel_configme() {
+   local saved_pwd=$(pwd -P)
+
+   cd "$tmp/linux-yocto"
+   meta_dir=$(kgit --meta)
+   configs="$(scc --configs -o $meta_dir)"
+
+   mkdir -p "$tmp/dot-configdir"
+   merge_config.sh -O "$tmp/dot-configdir" $configs > "$tmp/dot-configdir/merge_config_build.log" 2>&1
+
+   cd "$saved_pwd"
+}
+
+# Extracts .config and generated patch to /tmp
+extract_artifacts() {
+    local saved_pwd=$(pwd -P)
+
+    cd "$tmp/dot-configdir/source"
+    git diff "v$fullkver" HEAD > /tmp/generated-kernel-patch.patch
+    cp "$tmp/dot-configdir/.config" /tmp/config-virtualbox.x86_64
+
+    cd "$saved_pwd"
+}
+
+tmp="$(mktemp -d)"
+trap cleanup EXIT
+
+# kernel version
+fullkver="4.9.61"
+# kernel version without SUBLEVEL
+mainkver=${fullkver%.*}
+
+checkout_yocto_kernel
+
+checkout_yocto_kernel_cache
+
+kernel_meta
+
+apply_patch
+
+kernel_configme
+
+extract_artifacts
+
+echo "Generated config-virtualbox.x86_64 and generated-kernel-patch.patch in /tmp"
+
+echo -n "Cleaning up..."
+cleanup
+echo "Done!"
