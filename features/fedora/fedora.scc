@@ -1,0 +1,10 @@
+kconf non-hardware fedora.cfg
+
+# Patches imported from Fedora kernel SRPM file. See kernel.spec
+# section - "100 - Generic long running patches" for details
+
+patch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+patch die-floppy-die.patch
+patch no-pcspkr-modalias.patch
+patch Kbuild-Add-an-option-to-enable-GCC-VTA.patch
+patch crash-driver.patch
