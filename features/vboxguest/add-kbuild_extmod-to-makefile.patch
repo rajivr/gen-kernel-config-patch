@@ -1,0 +1,36 @@
+Add KBUILD_EXTMOD to Makefile
+
+From: Rajiv M Ranganath <rajiv.ranganath@atihita.com>
+
+
+---
+ drivers/lambda/vboxguest/Makefile |    2 ++
+ drivers/lambda/vboxsf/Makefile    |    2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/drivers/lambda/vboxguest/Makefile b/drivers/lambda/vboxguest/Makefile
+index 534526b..53ebbc1 100644
+--- a/drivers/lambda/vboxguest/Makefile
++++ b/drivers/lambda/vboxguest/Makefile
+@@ -15,6 +15,8 @@
+ # hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
+ #
+ 
++KBUILD_EXTMOD := $(PWD)/drivers/lambda
++
+ # Linux kbuild sets this to our source directory if we are called from there
+ obj ?= $(CURDIR)
+ include $(obj)/Makefile.include.header
+diff --git a/drivers/lambda/vboxsf/Makefile b/drivers/lambda/vboxsf/Makefile
+index fddff28..35f3667 100644
+--- a/drivers/lambda/vboxsf/Makefile
++++ b/drivers/lambda/vboxsf/Makefile
+@@ -14,6 +14,8 @@
+ # hope that it will be useful, but WITHOUT ANY WARRANTY of any kind.
+ #
+ 
++KBUILD_EXTMOD := $(PWD)/drivers/lambda
++
+ # Linux kbuild sets this to our source directory if we are called from there
+ obj ?= $(CURDIR)
+ include $(obj)/Makefile.include.header

@@ -1,0 +1,70 @@
+Reformat Makefile.include.header
+
+From: Rajiv M Ranganath <rajiv.ranganath@atihita.com>
+
+
+---
+ drivers/lambda/vboxguest/Makefile.include.header |   18 +++++++++---------
+ drivers/lambda/vboxsf/Makefile.include.header    |   18 +++++++++---------
+ 2 files changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/lambda/vboxguest/Makefile.include.header b/drivers/lambda/vboxguest/Makefile.include.header
+index 2d82afa..06543e1 100644
+--- a/drivers/lambda/vboxguest/Makefile.include.header
++++ b/drivers/lambda/vboxguest/Makefile.include.header
+@@ -88,16 +88,16 @@ endif
+ 
+ ifneq ($(MAKECMDGOALS),clean)
+ 
+- #
+- # building from kbuild (make -C <kernel_directory> M=`pwd`)
+- #
++#
++# building from kbuild (make -C <kernel_directory> M=`pwd`)
++#
+ 
+- # guess kernel version (24 or 26)
+- ifeq ($(shell if echo "$(VERSION).$(PATCHLEVEL)." | grep '2\.4\.' > /dev/null; then echo yes; fi),yes)
+-  KERN_VERSION := 24
+- else
+-  KERN_VERSION := 26
+- endif
++# guess kernel version (24 or 26)
++ifeq ($(shell if echo "$(VERSION).$(PATCHLEVEL)." | grep '2\.4\.' > /dev/null; then echo yes; fi),yes)
++ KERN_VERSION := 24
++else
++ KERN_VERSION := 26
++endif
+ 
+ # debug - show guesses.
+ ifdef DEBUG
+diff --git a/drivers/lambda/vboxsf/Makefile.include.header b/drivers/lambda/vboxsf/Makefile.include.header
+index 2d82afa..06543e1 100644
+--- a/drivers/lambda/vboxsf/Makefile.include.header
++++ b/drivers/lambda/vboxsf/Makefile.include.header
+@@ -88,16 +88,16 @@ endif
+ 
+ ifneq ($(MAKECMDGOALS),clean)
+ 
+- #
+- # building from kbuild (make -C <kernel_directory> M=`pwd`)
+- #
++#
++# building from kbuild (make -C <kernel_directory> M=`pwd`)
++#
+ 
+- # guess kernel version (24 or 26)
+- ifeq ($(shell if echo "$(VERSION).$(PATCHLEVEL)." | grep '2\.4\.' > /dev/null; then echo yes; fi),yes)
+-  KERN_VERSION := 24
+- else
+-  KERN_VERSION := 26
+- endif
++# guess kernel version (24 or 26)
++ifeq ($(shell if echo "$(VERSION).$(PATCHLEVEL)." | grep '2\.4\.' > /dev/null; then echo yes; fi),yes)
++ KERN_VERSION := 24
++else
++ KERN_VERSION := 26
++endif
+ 
+ # debug - show guesses.
+ ifdef DEBUG

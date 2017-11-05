@@ -1,0 +1,45 @@
+Add KBUILD_SRC to Makefile
+
+From: Rajiv M Ranganath <rajiv.ranganath@atihita.com>
+
+When doing a shadow build, the headers are relative to KBUILD_SRC.
+KBUILD_EXTMOD points to shadow build directory.
+
+Add the path to where the headers can be found to MOD_INCL.
+---
+ drivers/lambda/vboxguest/Makefile |    3 ++-
+ drivers/lambda/vboxsf/Makefile    |    4 +++-
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/lambda/vboxguest/Makefile b/drivers/lambda/vboxguest/Makefile
+index 53ebbc1..e0f65d4 100644
+--- a/drivers/lambda/vboxguest/Makefile
++++ b/drivers/lambda/vboxguest/Makefile
+@@ -123,9 +123,10 @@ ifeq ($(BUILD_TARGET_ARCH),amd64)
+ endif
+ MOD_INCL  = $(addprefix -I$(KBUILD_EXTMOD),/ /include /r0drv/linux)
+ MOD_INCL += $(addprefix -I$(KBUILD_EXTMOD)/vboxguest,/ /include /r0drv/linux)
++MOD_INCL += $(addprefix -I$(KBUILD_SRC)/drivers/lambda/vboxguest,/ /include /r0drv/linux)
+ 
+ ifneq ($(wildcard $(KBUILD_EXTMOD)/vboxguest),)
+- MANGLING := $(KBUILD_EXTMOD)/vboxguest/include/VBox/VBoxGuestMangling.h
++ MANGLING := VBox/VBoxGuestMangling.h
+ else
+  MANGLING := $(KBUILD_EXTMOD)/include/VBox/VBoxGuestMangling.h
+ endif
+diff --git a/drivers/lambda/vboxsf/Makefile b/drivers/lambda/vboxsf/Makefile
+index 35f3667..5231c98 100644
+--- a/drivers/lambda/vboxsf/Makefile
++++ b/drivers/lambda/vboxsf/Makefile
+@@ -49,8 +49,10 @@ MOD_INCL = \
+     $(addprefix -I$(KBUILD_EXTMOD),/ /include /r0drv/linux) \
+     $(addprefix -I$(KBUILD_EXTMOD)/vboxsf,/ /include /r0drv/linux)
+ 
++MOD_INCL += $(addprefix -I$(KBUILD_SRC)/drivers/lambda/vboxsf,/ /include /r0drv/linux)
++
+ ifneq ($(wildcard $(KBUILD_EXTMOD)/vboxsf),)
+- MANGLING := $(KBUILD_EXTMOD)/vboxsf/include/VBox/VBoxGuestMangling.h
++ MANGLING := VBox/VBoxGuestMangling.h
+ else
+  MANGLING := $(KBUILD_EXTMOD)/include/VBox/VBoxGuestMangling.h
+ endif

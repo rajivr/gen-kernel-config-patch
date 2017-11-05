@@ -1,0 +1,32 @@
+drivers: Update Kconfig, Makefile
+
+From: Rajiv M Ranganath <rajiv.ranganath@atihita.com>
+
+
+---
+ drivers/Kconfig  |    2 ++
+ drivers/Makefile |    3 +++
+ 2 files changed, 5 insertions(+)
+
+diff --git a/drivers/Kconfig b/drivers/Kconfig
+index e1e2066..2960a9a 100644
+--- a/drivers/Kconfig
++++ b/drivers/Kconfig
+@@ -202,4 +202,6 @@ source "drivers/hwtracing/intel_th/Kconfig"
+ 
+ source "drivers/fpga/Kconfig"
+ 
++source "drivers/lambda/Kconfig"
++
+ endmenu
+diff --git a/drivers/Makefile b/drivers/Makefile
+index 733bf0b..5c024a6 100644
+--- a/drivers/Makefile
++++ b/drivers/Makefile
+@@ -174,3 +174,6 @@ obj-$(CONFIG_STM)		+= hwtracing/stm/
+ obj-$(CONFIG_ANDROID)		+= android/
+ obj-$(CONFIG_NVMEM)		+= nvmem/
+ obj-$(CONFIG_FPGA)		+= fpga/
++
++# Lambda Linux driver updates
++obj-$(CONFIG_LAMBDA_DRIVER_UPDATES)    += lambda/
