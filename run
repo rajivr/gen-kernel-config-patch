@@ -70,6 +70,7 @@ kernel_meta() {
         "
     local kmeta_local_features_list="
         cfg/localversion.scc
+        features/docker/docker.scc
         features/fedora/fedora.scc
         features/squashfs/squashfs.scc
         features/vboxguest/vboxguest.scc
