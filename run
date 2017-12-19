@@ -21,7 +21,7 @@ cleanup() {
 checkout_yocto_kernel() {
     local _KBRANCH_GIT="git://git.yoctoproject.org/linux-yocto-$mainkver"
     local _KBRANCH="standard/base"
-    local _KBRANCH_COMMIT="d8520539587665c19a0afc97858069184574da66"
+    local _KBRANCH_COMMIT="5174e51fa08d0942ddcf8b19540e90ec10eeb621"
     local _KBRANCH_GIT_DEPTH=25
     local saved_pwd=$(pwd -P)
 
@@ -38,7 +38,7 @@ checkout_yocto_kernel() {
 checkout_yocto_kernel_cache() {
     local _YKC_GIT="git://git.yoctoproject.org/yocto-kernel-cache"
     local _YKC_BRANCH="yocto-$mainkver"
-    local _YKC_COMMIT="f4e37e151102d89c4d0e110c88eb3b3c36bdeaa4"
+    local _YKC_COMMIT="10f8ed198a4188625c9b5ac59de4d691b56a2617"
     local saved_pwd=$(pwd -P)
 
     cd "$tmp"
@@ -149,7 +149,7 @@ tmp="$(mktemp -d)"
 trap cleanup EXIT
 
 # kernel version
-fullkver="4.9.61"
+fullkver="4.9.65"
 # kernel version without SUBLEVEL
 mainkver=${fullkver%.*}
 
