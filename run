@@ -20,7 +20,7 @@ cleanup() {
 # This roughly corresponds to poky's do_kernel_checkout task
 checkout_yocto_kernel() {
     local _KBRANCH_GIT="git://git.yoctoproject.org/linux-yocto-$mainkver"
-    local _KBRANCH="standard/base"
+    local _KBRANCH="standard/tiny/base"
     local _KBRANCH_COMMIT="5174e51fa08d0942ddcf8b19540e90ec10eeb621"
     local _KBRANCH_GIT_DEPTH=25
     local saved_pwd=$(pwd -P)
@@ -61,8 +61,8 @@ checkout_yocto_kernel_cache() {
 # yocto-kernel-cache
 # http://www.yoctoproject.org/docs/2.5/kernel-dev/kernel-dev.html#bsp-descriptions
 kernel_meta() {
-    local _KMACHINE="common-pc-64"
-    local _KTYPE="standard"
+    local _KMACHINE="virtualbox"
+    local _KTYPE="tiny"
     local kmeta_ykc_features_list="
         features/debug/debug-kernel.scc
         features/debug/printk.scc
