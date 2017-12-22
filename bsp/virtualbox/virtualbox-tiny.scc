@@ -1,0 +1,10 @@
+define KMACHINE virtualbox
+define KTYPE tiny
+define KARCH x86_64
+
+include ktypes/tiny/tiny.scc
+
+include bsp/virtualbox/virtualbox.scc
+
+# default policy (adapted from bsp/common-pc/common-pc-standard.scc)
+include cfg/boot-live.scc
