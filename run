@@ -19,10 +19,10 @@ cleanup() {
 #
 # This roughly corresponds to poky's do_kernel_checkout task
 checkout_yocto_kernel() {
-    local _KBRANCH_GIT="git://git.yoctoproject.org/linux-yocto-$mainkver"
+    local _KBRANCH_GIT="https://github.com/2ll2/linux-yocto-${mainkver}.git"
     local _KBRANCH="standard/tiny/base"
-    local _KBRANCH_COMMIT="3061011aade2678733665bccd553fdcd60165671"
-    local _KBRANCH_GIT_DEPTH=25
+    local _KBRANCH_COMMIT="1dffb1104ef723e96a204af53cd5a5ad5f2c1dcb"
+    local _KBRANCH_GIT_DEPTH=5
     local saved_pwd=$(pwd -P)
 
     cd "$tmp"
@@ -37,8 +37,11 @@ checkout_yocto_kernel() {
 # YKC stands for yocto kernel cache
 checkout_yocto_kernel_cache() {
     local _YKC_GIT="git://git.yoctoproject.org/yocto-kernel-cache"
-    local _YKC_BRANCH="yocto-$mainkver"
-    local _YKC_COMMIT="d15398f64655e36b444d69b3bed43444608abf55"
+    # At this time, upstream does not have yocto-4.14 branch. Therefore we are
+    # working off master. We'll revert to yocto-$mainver once yocto-4.14 branch
+    # becomes available.
+    local _YKC_BRANCH="master"
+    local _YKC_COMMIT="ee7e849882aa2f0947dd56a60ba5b0d2eec558f2"
     local saved_pwd=$(pwd -P)
 
     cd "$tmp"
@@ -46,6 +49,10 @@ checkout_yocto_kernel_cache() {
 
     cd yocto-kernel-cache
     git checkout "$_YKC_COMMIT" -b ykc-commit
+
+    # Fix kver due to non-availability of upstream YKC yocto-4.14 branch
+    echo "v$fullkver" > kver
+
     cd "$saved_pwd"
 }
 
@@ -150,7 +157,7 @@ tmp="$(mktemp -d)"
 trap cleanup EXIT
 
 # kernel version
-fullkver="4.9.71"
+fullkver="4.14.15"
 # kernel version without SUBLEVEL
 mainkver=${fullkver%.*}
 
