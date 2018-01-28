@@ -9,24 +9,24 @@ From: Rajiv M Ranganath <rajiv.ranganath@atihita.com>
  2 files changed, 5 insertions(+)
 
 diff --git a/drivers/Kconfig b/drivers/Kconfig
-index e1e2066..2960a9a 100644
+index 1d7af3c2ff27..8adf846001f6 100644
 --- a/drivers/Kconfig
 +++ b/drivers/Kconfig
-@@ -202,4 +202,6 @@ source "drivers/hwtracing/intel_th/Kconfig"
+@@ -209,4 +209,6 @@ source "drivers/tee/Kconfig"
  
- source "drivers/fpga/Kconfig"
+ source "drivers/mux/Kconfig"
  
 +source "drivers/lambda/Kconfig"
 +
  endmenu
 diff --git a/drivers/Makefile b/drivers/Makefile
-index 733bf0b..5c024a6 100644
+index d242d3514d30..887524f94358 100644
 --- a/drivers/Makefile
 +++ b/drivers/Makefile
-@@ -174,3 +174,6 @@ obj-$(CONFIG_STM)		+= hwtracing/stm/
- obj-$(CONFIG_ANDROID)		+= android/
- obj-$(CONFIG_NVMEM)		+= nvmem/
- obj-$(CONFIG_FPGA)		+= fpga/
+@@ -182,3 +182,6 @@ obj-$(CONFIG_FPGA)		+= fpga/
+ obj-$(CONFIG_FSI)		+= fsi/
+ obj-$(CONFIG_TEE)		+= tee/
+ obj-$(CONFIG_MULTIPLEXER)	+= mux/
 +
 +# Lambda Linux driver updates
 +obj-$(CONFIG_LAMBDA_DRIVER_UPDATES)    += lambda/
