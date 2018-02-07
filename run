@@ -68,26 +68,28 @@ checkout_yocto_kernel_cache() {
 # yocto-kernel-cache
 # http://www.yoctoproject.org/docs/2.5/kernel-dev/kernel-dev.html#bsp-descriptions
 kernel_meta() {
-    local _KMACHINE="virtualbox"
+    local _KMACHINE="qemu_aarch64-dom0"
     local _KTYPE="tiny"
+    local _KARCH="arm64"
+    # 8250.scc, efi.scc is needed for xen.scc
     local kmeta_ykc_features_list="
+        cfg/8250.scc
+        cfg/efi.scc
         features/debug/debug-kernel.scc
         features/debug/printk.scc
-        features/netfilter/netfilter.scc
         "
     local kmeta_local_features_list="
         cfg/localversion.scc
-        features/docker/docker.scc
         features/fedora/fedora.scc
         features/squashfs/squashfs.scc
-        features/vboxguest/vboxguest.scc
+        features/xen/xen.scc
         "
 
     local kmeta_local_dir="$(dirname $0)"
     local kmeta_ykc_dir="$tmp/yocto-kernel-cache"
 
     local bsp_definition=$(spp -I$kmeta_local_dir -I$kmeta_ykc_dir \
-                               --find -DKMACHINE=$_KMACHINE -DKTYPE=$_KTYPE)
+                               --find -DKMACHINE=$_KMACHINE -DKTYPE=$_KTYPE -DKARCH=$_KARCH)
     local meta_dir=$(kgit --meta)
 
     local kmeta_ykc_features=""
@@ -137,7 +139,7 @@ kernel_configme() {
    configs="$(scc --configs -o $meta_dir)"
 
    mkdir -p "$tmp/dot-configdir"
-   merge_config.sh -O "$tmp/dot-configdir" $configs > "$tmp/dot-configdir/merge_config_build.log" 2>&1
+   ARCH=arm64 merge_config.sh -n -O "$tmp/dot-configdir" $configs > "$tmp/dot-configdir/merge_config_build.log" 2>&1
 
    cd "$saved_pwd"
 }
@@ -148,7 +150,7 @@ extract_artifacts() {
 
     cd "$tmp/dot-configdir/source"
     git diff "v$fullkver" HEAD > /tmp/generated-kernel-patch.patch
-    cp "$tmp/dot-configdir/.config" /tmp/config-virtualbox.x86_64
+    cp "$tmp/dot-configdir/.config" /tmp/config-qemu_aarch64-dom0.aarch64
 
     cd "$saved_pwd"
 }
@@ -173,7 +175,7 @@ kernel_configme
 
 extract_artifacts
 
-echo "Generated config-virtualbox.x86_64 and generated-kernel-patch.patch in /tmp"
+echo "Generated config-virtualbox.aarch64 and generated-kernel-patch.patch in /tmp"
 
 echo -n "Cleaning up..."
 cleanup
