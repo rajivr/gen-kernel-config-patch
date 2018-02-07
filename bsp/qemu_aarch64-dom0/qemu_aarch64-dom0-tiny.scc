@@ -1,0 +1,17 @@
+define KMACHINE qemu_aarch64-dom0
+define KTYPE tiny
+define KARCH arm64
+
+include ktypes/tiny/tiny.scc
+
+# stripped version of standard.scc
+
+include bsp/qemu_aarch64-dom0/qemu_aarch64-dom0.scc
+
+# adapted from bsp/qemuarm64/qemuarm64.scc
+
+kconf hardware bsp/qemuarm64/qemuarm64.cfg
+
+# others (from qemuarm64-standard.scc)
+
+include cfg/virtio.scc
