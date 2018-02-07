@@ -1,6 +1,6 @@
 # gen-kernel-config-patch
 
-This branch uses Yocto Kernel infrastructure generate VirtualBox flavor
+This branch uses Yocto Kernel infrastructure generate qemu\_aarch64-dom0 flavor
 `.config` file and an integrated patch that can be applied against upstream
 kernel.
 
@@ -23,6 +23,6 @@ $ docker run --rm -ti -v /tmp:/tmp -v $(pwd):/root/src \
 
 In `/tmp` two files are generated.
 
-* `config-virtualbox.x86_64`
+* `config-qemu_aarch64-dom0.aarch64`
 
 * `generated-kernel-patch.patch`
