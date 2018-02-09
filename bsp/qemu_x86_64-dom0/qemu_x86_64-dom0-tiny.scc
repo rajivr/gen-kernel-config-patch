@@ -1,0 +1,28 @@
+define KMACHINE qemu_x86_64-dom0
+define KTYPE tiny
+define KARCH x86_64
+
+include ktypes/tiny/tiny.scc
+
+# stripped version of standard.scc
+
+include bsp/qemu_x86_64-dom0/qemu_x86_64-dom0.scc
+
+# adapted from bsp/common-pc-64/common-pc-64.scc
+
+kconf hardware bsp/common-pc-64/common-pc-64-cpu.cfg
+
+include cfg/x86_64.scc
+include cfg/amd.scc
+include cfg/intel.scc
+include features/pci/pci.scc
+
+# generic power management
+include features/power/intel.scc
+
+# serial port
+include cfg/8250.scc
+
+# others (from common-pc-64-standard.scc)
+
+include cfg/virtio.scc
