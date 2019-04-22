@@ -1,0 +1,3 @@
+.metadir
+config-zynqmp_aarch64-dom0.aarch64
+generated-kernel-patch.patch
