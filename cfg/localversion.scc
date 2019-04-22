@@ -1,0 +1,5 @@
+define KFEATURE_DESCRIPTION "Append version information to the version string"
+define KFEATURE_COMPATIBILITY all
+
+# We set CONFIG_LOCALVERSION="". In the APKBUILD file we append EXTRAVERSION.
+kconf non-hardware localversion.cfg
